@@ -93,7 +93,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
       Provider.of<ProductsProvider>(context, listen: false)
           .addProduct(_editedProduct)
           .catchError((error) {
-        return showDialog(
+        return showDialog<Null>(
             context: context,
             builder: (ctx) => AlertDialog(
                     title: Text('An error occured'),
