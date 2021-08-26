@@ -16,7 +16,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final _imageUrlFocusNode = FocusNode();
   final _form = GlobalKey<FormState>();
   var _editedProduct = Product(
-    id: '',
+    id: 'null',
     title: '',
     price: 0,
     description: '',
@@ -29,6 +29,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     'imageUrl': '',
   };
   var _isInit = true;
+  var _isLoading = false;
 
   @override
   void initState() {
@@ -41,8 +42,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
     if (_isInit) {
       final productId = ModalRoute.of(context)!.settings.arguments as String;
       if (productId != null) {
-        _editedProduct =
-            Provider.of<ProductsProvider>(context).findById(productId);
+        _editedProduct = Provider.of<ProductsProvider>(context, listen: false)
+            .findById(productId);
         _initValues = {
           'title': _editedProduct.title,
           'description': _editedProduct.description,
@@ -77,16 +78,24 @@ class _EditProductScreenState extends State<EditProductScreen> {
     if (!isValid) {
       return;
     }
-    if (_editedProduct.id != null) {
+    _form.currentState!.save();
+    setState(() {
+      _isLoading = true;
+    });
+    if (_editedProduct.id != 'null') {
       Provider.of<ProductsProvider>(context, listen: false)
           .updateProduct(_editedProduct.id, _editedProduct);
+      setState(() {
+        _isLoading = false;
+      });
+      Navigator.of(context).pop();
     } else {
       Provider.of<ProductsProvider>(context, listen: false)
-          .addProduct(_editedProduct);
+          .addProduct(_editedProduct)
+          .then((_) => {
+            
+            Navigator.of(context).pop()});
     }
-    _form.currentState!.save();
-
-    Navigator.of(context).pop();
   }
 
   @override
@@ -226,7 +235,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   ),
                   Expanded(
                     child: TextFormField(
-                      initialValue: _initValues['imageUrl'],
                       decoration: InputDecoration(labelText: 'ImageUrl'),
                       keyboardType: TextInputType.url,
                       textInputAction: TextInputAction.done,

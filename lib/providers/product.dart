@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 class Product with ChangeNotifier {
   final String id;
@@ -18,6 +18,7 @@ class Product with ChangeNotifier {
   });
 
   void toggleFavoriteStatus() {
+    print('here favorite');
     isFavorite = !isFavorite;
     notifyListeners();
   }
