@@ -7,9 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/models/http_exception.dart';
 
 class Auth with ChangeNotifier {
-  late String? _token;
+  String? _token;
   DateTime? _expiryDate;
-  late String? _userId;
+  String? _userId;
   Timer? _authTimer;
 
   bool get isAuth {
